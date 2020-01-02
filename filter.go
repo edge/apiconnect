@@ -3,11 +3,7 @@
 
 package apiconnect
 
-import (
-	"fmt"
-
-	"github.com/edge/utils/pkg/strhelp"
-)
+import "fmt"
 
 const (
 	requestTimeout       = 5
@@ -109,7 +105,7 @@ func (f *Filters) ToQueryString() string {
 		filters = append(filters, f.String())
 	}
 
-	return fmt.Sprintf(`{%s}`, strhelp.Join(",", 1, filters...))
+	return fmt.Sprintf(`{%s}`, Join(",", 1, filters...))
 }
 
 // NewFilters returns a new instance of Filters.
