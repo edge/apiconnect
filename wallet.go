@@ -1,5 +1,5 @@
 // Edge Network
-// (c) 2019 Edge Network technologies Ltd.
+// (c) 2020 Edge Network technologies Ltd.
 
 package apiconnect
 
