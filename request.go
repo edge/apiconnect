@@ -15,7 +15,7 @@ import (
 // Request stores request parameters.
 type Request interface {
 	// Initialize initializes the request.
-	Initialize(host, property, bearer string, port int) error
+	Initialize(proto, host, property, bearer string, port int) error
 
 	// Do executes the HTTPRequest.
 	Do(ctx context.Context) ([]byte, error)
@@ -52,10 +52,10 @@ func fieldsToJSON(fields []string) string {
 }
 
 // Initialize initializes the request.
-func (g *Get) Initialize(host, property, bearer string, port int) error {
+func (g *Get) Initialize(proto, host, property, bearer string, port int) error {
 	g.HTTPRequest = &HTTPRequest{
 		Method: http.MethodGet,
-		URL:    fmt.Sprintf("http://%s:%d/%s/%s", host, port, property, g.Collection),
+		URL:    fmt.Sprintf("%s://%s:%d/%s/%s", proto, host, port, property, g.Collection),
 		Query:  make(map[string]string),
 	}
 
@@ -64,12 +64,10 @@ func (g *Get) Initialize(host, property, bearer string, port int) error {
 	}
 
 	g.HTTPRequest.SetHeader("Content-Type", "application/json")
-
-	// Set auth header.
-	g.HTTPRequest.SetHeader("Authorization", fmt.Sprintf("Bearer %s", bearer))
-
 	g.HTTPRequest.SetParam("page", strconv.FormatUint(g.Page, 10))
 	g.HTTPRequest.SetParam("count", strconv.FormatUint(g.Limit, 10))
+	// Set auth header.
+	g.HTTPRequest.SetHeader("Authorization", fmt.Sprintf("Bearer %s", bearer))
 
 	if g.Sort != nil {
 		g.HTTPRequest.SetParam("sort", g.Sort.String())
@@ -117,10 +115,10 @@ type Post struct {
 }
 
 // Initialize initializes the request.
-func (p *Post) Initialize(host, property, bearer string, port int) error {
+func (p *Post) Initialize(proto, host, property, bearer string, port int) error {
 	p.HTTPRequest = &HTTPRequest{
 		Method:  http.MethodPost,
-		URL:     fmt.Sprintf("http://%s:%d/%s/%s", host, port, property, p.Collection),
+		URL:     fmt.Sprintf("%s://%s:%d/%s/%s", proto, host, port, property, p.Collection),
 		Payload: bytes.NewBuffer(p.Body),
 		Query:   make(map[string]string),
 	}
@@ -159,10 +157,10 @@ type Put struct {
 }
 
 // Initialize initializes the request.
-func (p *Put) Initialize(h, property, b string, pt int) error {
+func (p *Put) Initialize(proto, host, property, bearer string, port int) error {
 	p.HTTPRequest = &HTTPRequest{
 		Method:  http.MethodPut,
-		URL:     fmt.Sprintf("http://%s:%d/%s/%s/%s", h, pt, property, p.Collection, p.ID),
+		URL:     fmt.Sprintf("%s://%s:%d/%s/%s/%s", proto, host, port, property, p.Collection, p.ID),
 		Payload: bytes.NewBuffer(p.Body),
 		Query:   make(map[string]string),
 	}
@@ -173,7 +171,7 @@ func (p *Put) Initialize(h, property, b string, pt int) error {
 
 	p.HTTPRequest.SetHeader("Content-Type", "application/json")
 	// Set auth header.
-	p.HTTPRequest.SetHeader("Authorization", fmt.Sprintf("Bearer %s", b))
+	p.HTTPRequest.SetHeader("Authorization", fmt.Sprintf("Bearer %s", bearer))
 
 	return nil
 }
@@ -196,10 +194,10 @@ type Delete struct {
 }
 
 // Initialize initializes the request.
-func (d *Delete) Initialize(host, property, bearer string, port int) error {
+func (d *Delete) Initialize(proto, host, property, bearer string, port int) error {
 	d.HTTPRequest = &HTTPRequest{
 		Method: http.MethodDelete,
-		URL:    fmt.Sprintf("http://%s:%d/%s/%s/%s", host, port, property, d.Collection, d.ID),
+		URL:    fmt.Sprintf("%s://%s:%d/%s/%s/%s", proto, host, port, property, d.Collection, d.ID),
 		Query:  make(map[string]string),
 	}
 

@@ -10,6 +10,7 @@ import (
 
 // Instance stores connection parameters.
 type Instance struct {
+	Proto    string
 	Hostname string
 	Port     int
 	Property string
@@ -19,7 +20,7 @@ type Instance struct {
 // Do executes a request.
 func (i *Instance) Do(ctx context.Context, r Request, res interface{}) ([]byte, error) {
 	bearer := i.wallet.GetBearer(ctx)
-	if err := r.Initialize(i.Hostname, i.Property, bearer, i.Port); err != nil {
+	if err := r.Initialize(i.Proto, i.Hostname, i.Property, bearer, i.Port); err != nil {
 		return nil, err
 	}
 
@@ -33,8 +34,9 @@ func (i *Instance) Do(ctx context.Context, r Request, res interface{}) ([]byte, 
 }
 
 // New returns a new instance of API.
-func New(host, property, client, secret string, port int) *Instance {
+func New(proto, host, property, client, secret string, port int) *Instance {
 	return &Instance{
+		Proto:    proto,
 		Hostname: host,
 		Port:     port,
 		Property: property,
