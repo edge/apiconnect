@@ -62,9 +62,9 @@ func (w *Wallet) GetBearer(ctx context.Context) string {
 }
 
 // NewWallet creates a new instance of Wallet.
-func NewWallet(host, client, secret string, port int) *Wallet {
+func NewWallet(proto, host, client, secret string, port int) *Wallet {
 	return &Wallet{
-		url:         fmt.Sprintf("http://%s:%d/token", host, port),
+		url:         fmt.Sprintf("%s://%s:%d/token", proto, host, port),
 		credentials: &Credentials{client, secret},
 	}
 }

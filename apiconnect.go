@@ -40,6 +40,6 @@ func New(proto, host, property, client, secret string, port int) *Instance {
 		Hostname: host,
 		Port:     port,
 		Property: property,
-		wallet:   NewWallet(host, client, secret, port),
+		wallet:   NewWallet(proto, host, client, secret, port),
 	}
 }
