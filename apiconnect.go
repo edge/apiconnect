@@ -6,6 +6,7 @@ package apiconnect
 import (
 	"context"
 	"encoding/json"
+	"net/http"
 )
 
 // Instance stores connection parameters.
@@ -18,19 +19,19 @@ type Instance struct {
 }
 
 // Do executes a request.
-func (i *Instance) Do(ctx context.Context, r Request, res interface{}) ([]byte, error) {
+func (i *Instance) Do(ctx context.Context, r Request, res interface{}) ([]byte, *http.Header, error) {
 	bearer := i.wallet.GetBearer(ctx)
 	if err := r.Initialize(i.Proto, i.Hostname, i.Property, bearer, i.Port); err != nil {
-		return nil, err
+		return nil, nil, err
 	}
 
-	resp, err := r.Do(ctx)
-	if err != nil {
-		return nil, err
+	resp, headers, err := r.Do(ctx)
+	if err != nil || resp == nil {
+		return nil, headers, err
 	}
 
 	err = json.Unmarshal(resp, &res)
-	return resp, err
+	return resp, headers, err
 }
 
 // New returns a new instance of API.

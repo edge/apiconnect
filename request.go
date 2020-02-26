@@ -18,7 +18,7 @@ type Request interface {
 	Initialize(proto, host, property, bearer string, port int) error
 
 	// Do executes the HTTPRequest.
-	Do(ctx context.Context) ([]byte, error)
+	Do(ctx context.Context) ([]byte, *http.Header, error)
 
 	// MarshalBinary returns the request url as binary.
 	MarshalBinary() ([]byte, error)
@@ -36,6 +36,7 @@ type Get struct {
 	Fields       []string
 	Query        *Filters
 	HTTPRequest  *HTTPRequest
+	ETag         string
 }
 
 // fieldsToJSON converts a list of fields to JSON.
@@ -63,6 +64,7 @@ func (g *Get) Initialize(proto, host, property, bearer string, port int) error {
 		return err
 	}
 
+	g.HTTPRequest.SetHeader("If-None-Match", g.ETag)
 	g.HTTPRequest.SetHeader("Content-Type", "application/json")
 	g.HTTPRequest.SetParam("page", strconv.FormatUint(g.Page, 10))
 	g.HTTPRequest.SetParam("count", strconv.FormatUint(g.Limit, 10))
@@ -102,7 +104,7 @@ func (g *Get) MarshalBinary() ([]byte, error) {
 }
 
 // Do executes the HTTPRequest.
-func (g *Get) Do(ctx context.Context) ([]byte, error) {
+func (g *Get) Do(ctx context.Context) ([]byte, *http.Header, error) {
 	return g.HTTPRequest.Do(ctx)
 }
 
@@ -144,7 +146,7 @@ func (p *Post) MarshalBinary() ([]byte, error) {
 }
 
 // Do executes the HTTPRequest.
-func (p *Post) Do(ctx context.Context) ([]byte, error) {
+func (p *Post) Do(ctx context.Context) ([]byte, *http.Header, error) {
 	return p.HTTPRequest.Do(ctx)
 }
 
@@ -182,7 +184,7 @@ func (p *Put) MarshalBinary() ([]byte, error) {
 }
 
 // Do executes the HTTPRequest.
-func (p *Put) Do(ctx context.Context) ([]byte, error) {
+func (p *Put) Do(ctx context.Context) ([]byte, *http.Header, error) {
 	return p.HTTPRequest.Do(ctx)
 }
 
@@ -218,7 +220,7 @@ func (d *Delete) MarshalBinary() ([]byte, error) {
 }
 
 // Do executes the HTTPRequest.
-func (d *Delete) Do(ctx context.Context) ([]byte, error) {
+func (d *Delete) Do(ctx context.Context) ([]byte, *http.Header, error) {
 	return d.HTTPRequest.Do(ctx)
 }
 

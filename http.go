@@ -5,6 +5,7 @@ package apiconnect
 
 import (
 	"context"
+	"fmt"
 	"io"
 	"io/ioutil"
 	"net/http"
@@ -23,7 +24,7 @@ type HTTPRequest struct {
 }
 
 // Do executes a request.
-func (h *HTTPRequest) Do(ctx context.Context) ([]byte, error) {
+func (h *HTTPRequest) Do(ctx context.Context) ([]byte, *http.Header, error) {
 	ctx, cancel := context.WithTimeout(ctx, time.Second*requestTimeout)
 	defer cancel()
 
@@ -34,13 +35,23 @@ func (h *HTTPRequest) Do(ctx context.Context) ([]byte, error) {
 	resp, err := http.DefaultClient.Do(h.Req.WithContext(ctx))
 
 	if err != nil {
-		return nil, err
+		return nil, nil, err
+	}
+
+	if resp.StatusCode != http.StatusOK && resp.StatusCode != http.StatusNotModified {
+		return nil, nil, fmt.Errorf("API request failed with code %d", resp.StatusCode)
 	}
 
 	defer resp.Body.Close()
-	body, _ := ioutil.ReadAll(resp.Body)
 
-	return body, nil
+	// No need for a body with a 304
+	if resp.StatusCode == http.StatusNotModified {
+		return nil, &resp.Header, err
+	}
+
+	body, err := ioutil.ReadAll(resp.Body)
+
+	return body, &resp.Header, err
 }
 
 // SetParam sets URL parameters.

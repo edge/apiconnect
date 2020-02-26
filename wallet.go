@@ -36,7 +36,7 @@ func (w *Wallet) NewBearer(ctx context.Context) {
 	}
 
 	r.SetHeader("Content-Type", "application/json")
-	res, err := r.Do(ctx)
+	res, _, err := r.Do(ctx)
 
 	if err != nil {
 		return
