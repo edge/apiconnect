@@ -25,6 +25,33 @@ type FieldFilter interface {
 	String() string
 }
 
+// FieldExistsFilter stores exists filter operator and value.
+type FieldExistsFilter struct {
+	Field    string
+	Operator string
+	Value    bool
+}
+
+// String returns a fieldexists filter.
+func (f *FieldExistsFilter) String() string {
+	return fmt.Sprintf(`"%s": {"%s": null}`, f.Field, f.Operator)
+}
+
+// FieldExists returns a new instance of FieldExistsFilter.
+func FieldExists(f string, v bool) FieldFilter {
+	var o string
+	if v {
+		o = "$ne"
+	} else {
+		o = "$eq"
+	}
+	return &FieldExistsFilter{
+		Field:    f,
+		Operator: o,
+		Value:    v,
+	}
+}
+
 // BooleanFilter stores boolean operator and value.
 type BooleanFilter struct {
 	Field    string
