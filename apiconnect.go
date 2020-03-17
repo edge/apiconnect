@@ -34,6 +34,11 @@ func (i *Instance) Do(ctx context.Context, r Request, res interface{}) ([]byte, 
 	return resp, headers, err
 }
 
+// GetBearer proxy the call to the private field `wallet`.
+func (i *Instance) GetBearer(ctx context.Context) string {
+	return i.wallet.GetBearer(ctx)
+}
+
 // New returns a new instance of API.
 func New(proto, host, property, client, secret string, port int) *Instance {
 	return &Instance{
