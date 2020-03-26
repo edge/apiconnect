@@ -17,6 +17,7 @@ const (
 	NotEquals            = "$ne"
 	NotIn                = "$nin"
 	In                   = "$in"
+	Now                  = "$now"
 )
 
 // FieldFilter is an interface for a filter.
@@ -41,14 +42,22 @@ func (f *FieldExistsFilter) String() string {
 func FieldExists(f string, v bool) FieldFilter {
 	var o string
 	if v {
-		o = "$ne"
+		o = NotEquals
 	} else {
-		o = "$eq"
+		o = Equals
 	}
 	return &FieldExistsFilter{
 		Field:    f,
 		Operator: o,
 		Value:    v,
+	}
+}
+
+func EarlierThanNow(f string) FieldFilter {
+	return &FieldExistsFilter{
+		Field:    f,
+		Operator: LessThan,
+		Value:    Now,
 	}
 }
 
