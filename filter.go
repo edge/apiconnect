@@ -53,14 +53,6 @@ func FieldExists(f string, v bool) FieldFilter {
 	}
 }
 
-func EarlierThanNow(f string) FieldFilter {
-	return &FieldExistsFilter{
-		Field:    f,
-		Operator: LessThan,
-		Value:    Now,
-	}
-}
-
 // BooleanFilter stores boolean operator and value.
 type BooleanFilter struct {
 	Field    string
