@@ -104,7 +104,7 @@ type OneOfFilter struct {
 
 // String returns a stringified filter.
 func (o *OneOfFilter) String() string {
-	values := fmt.Sprintf(`["%s"]`, Join(",", 1, o.Values...))
+	values := fmt.Sprintf(`["%s"]`, Join(`","`, 1, o.Values...))
 	return fmt.Sprintf(`"%s": {"%s": %s}`, o.Field, o.Operator, values)
 }
 
