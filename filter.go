@@ -95,6 +95,27 @@ func NumFilter(f, o string, v uint64) FieldFilter {
 	}
 }
 
+type OneOfFilter struct {
+	Field    string
+	Operator string
+	Values   []string
+}
+
+// String returns a stringified filter.
+func (o *OneOfFilter) String() string {
+	values := fmt.Sprintf(`["%s"]`, Join(",", 1, o.Values...))
+	return fmt.Sprintf(`"%s": {"%s": %d}`, o.Field, o.Operator, values)
+}
+
+// IsOneOf returns a new instance of NumberFilter.
+func IsOneOf(f, v []string) FieldFilter {
+	return &OneOf{
+		Field:    f,
+		Operator: In,
+		Values:   v,
+	}
+}
+
 // StringFilter stores number operator and value.
 type StringFilter struct {
 	Field    string
