@@ -95,6 +95,7 @@ func NumFilter(f, o string, v uint64) FieldFilter {
 	}
 }
 
+// OneOfFilter defines a multi value check.
 type OneOfFilter struct {
 	Field    string
 	Operator string
@@ -104,10 +105,10 @@ type OneOfFilter struct {
 // String returns a stringified filter.
 func (o *OneOfFilter) String() string {
 	values := fmt.Sprintf(`["%s"]`, Join(",", 1, o.Values...))
-	return fmt.Sprintf(`"%s": {"%s": %d}`, o.Field, o.Operator, values)
+	return fmt.Sprintf(`"%s": {"%s": %s}`, o.Field, o.Operator, values)
 }
 
-// IsOneOf returns a new instance of NumberFilter.
+// IsOneOf returns a new instance of OneOfFilter.
 func IsOneOf(f string, v []string) FieldFilter {
 	return &OneOfFilter{
 		Field:    f,
