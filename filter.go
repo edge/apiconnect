@@ -108,7 +108,7 @@ func (o *OneOfFilter) String() string {
 }
 
 // IsOneOf returns a new instance of NumberFilter.
-func IsOneOf(f, v []string) FieldFilter {
+func IsOneOf(f string, v []string) FieldFilter {
 	return &OneOfFilter{
 		Field:    f,
 		Operator: In,
