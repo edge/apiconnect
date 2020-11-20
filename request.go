@@ -162,7 +162,7 @@ type Put struct {
 func (p *Put) Initialize(proto, host, property, bearer string, port int) error {
 	p.HTTPRequest = &HTTPRequest{
 		Method:  http.MethodPut,
-		URL:     fmt.Sprintf("%s://%s:%d/%s/%s/%s", proto, host, port, property, p.Collection),
+		URL:     fmt.Sprintf("%s://%s:%d/%s/%s", proto, host, port, property, p.Collection),
 		Payload: bytes.NewBuffer(p.Body),
 		Query:   make(map[string]string),
 	}
